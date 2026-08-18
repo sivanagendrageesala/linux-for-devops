@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux DevOps Commands - Complete Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-black: #000;
+            --accent-orange: #ff6600;
+            --success-green: #10b981;
+            --warning-red: #ef4444;
+            --bg-light: #f8f7f5;
+            --bg-dark: #1a1a1a;
+            --text-light: #1a1a1a;
+            --text-dark: #f8f7f5;
+            --border-light: #e5e4e0;
+            --border-dark: #333333;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg-light: #1a1a1a;
+                --text-light: #f8f7f5;
+                --border-light: #333333;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #000, #333);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: var(--border-light);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        nav button:hover, nav button.active {
+            border-bottom-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .category-section {
+            margin-bottom: 3rem;
+            display: none;
+        }
+
+        .category-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--accent-orange);
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--accent-orange);
+            padding-bottom: 0.5rem;
+        }
+
+        .command-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .command-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-orange);
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .description {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .syntax {
+            background: #1a1a1a;
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        .example {
+            background: rgba(255, 102, 0, 0.05);
+            border-left: 3px solid var(--accent-orange);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .example-title {
+            font-weight: bold;
+            color: var(--accent-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .example-code {
+            background: #1a1a1a;
+            color: #60a5fa;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+
+        .example-output {
+            background: #1a1a1a;
+            color: #10b981;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .flags {
+            background: rgba(16, 185, 129, 0.05);
+            border-left: 3px solid var(--success-green);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .flags h4 {
+            color: var(--success-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .flag-item {
+            margin: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .flag-name {
+            color: var(--accent-orange);
+            font-weight: bold;
+        }
+
+        .flag-desc {
+            color: var(--text-light);
+            margin-left: 1rem;
+        }
+
+        .use-case {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 3px solid #fbbf24;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .use-case-title {
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box {
+            background: rgba(96, 165, 250, 0.1);
+            border-left: 3px solid #60a5fa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #7a7a7a;
+            border-top: 1px solid var(--border-light);
+            margin-top: 3rem;
+        }
+
+        .search-box {
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 6px;
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            nav { flex-wrap: wrap; }
+            nav button { font-size: 0.85rem; padding: 0.4rem 0.8rem; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐧 Linux DevOps Commands</h1>
+        <p>Complete Guide with Practical Examples & Real-World Use Cases</p>
+    </header>
+
+    <nav id="navbar">
+        <button class="nav-btn active" onclick="switchCategory('overview')">📋 Overview</button>
+        <button class="nav-btn" onclick="switchCategory('file')">📁 File & Directory</button>
+        <button class="nav-btn" onclick="switchCategory('system')">🖥️ System Info</button>
+        <button class="nav-btn" onclick="switchCategory('user')">👤 User & Permissions</button>
+        <button class="nav-btn" onclick="switchCategory('network')">🌐 Network</button>
+        <button class="nav-btn" onclick="switchCategory('process')">⚙️ Process</button>
+        <button class="nav-btn" onclick="switchCategory('logs')">📝 Logs</button>
+        <button class="nav-btn" onclick="switchCategory('package')">📦 Package</button>
+        <button class="nav-btn" onclick="switchCategory('disk')">💾 Disk</button>
+        <button class="nav-btn" onclick="switchCategory('text')">✏️ Text</button>
+        <button class="nav-btn" onclick="switchCategory('service')">🔧 Services</button>
+    </nav>
+
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search commands..." onkeyup="filterCommands()">
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="category-section active">
+            <h2>📋 Linux DevOps Commands Overview</h2>
+            <div class="info-box">
+                <strong>What are DevOps Commands?</strong>
+                <p>Essential Linux commands used by DevOps engineers for system administration, automation, monitoring, and infrastructure management. These commands are the foundation for managing servers, containers, and cloud infrastructure.</p>
+            </div>
+
+            <h3 style="color: var(--accent-orange); margin-top: 2rem; margin-bottom: 1rem;">Categories Covered:</h3>
+            <ul style="margin-left: 2rem; line-height: 2;">
+                <li><strong>File & Directory Management:</strong> Navigate, create, modify, and delete files</li>
+                <li><strong>System Information:</strong> Check system resources, uptime, and performance</li>
+                <li><strong>User & Permissions:</strong> Manage users, groups, and file permissions</li>
+                <li><strong>Network Management:</strong> Configure networking, test connectivity, manage firewalls</li>
+                <li><strong>Process Management:</strong> Monitor, kill, and manage running processes</li>
+                <li><strong>Log Management:</strong> View, search, and monitor log files</li>
+                <li><strong>Package Management:</strong> Install, update, and manage software packages</li>
+                <li><strong>Disk Management:</strong> Check disk usage, mount filesystems, manage partitions</li>
+                <li><strong>Text Processing:</strong> Search, filter, and transform text data</li>
+                <li><strong>Service Management:</strong> Start, stop, and manage system services</li>
+            </ul>
+        </div>
+
+        <!-- File & Directory Section -->
+        <div id="file" class="category-section">
+            <h2>📁 File & Directory Management</h2>
+
+            <!-- pwd -->
+            <div class="command-card">
+                <div class="command-name">pwd (Print Working Directory)</div>
+                <div class="description">Shows the absolute path of the current directory you're in.</div>
+                <div class="syntax">$ pwd</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ pwd</div>
+                    <div class="example-output">/home/ubuntu/projects/myapp</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Always know where you are before running commands. Essential when navigating complex directory structures.
+                </div>
+            </div>
+
+            <!-- ls -->
+            <div class="command-card">
+                <div class="command-name">ls (List)</div>
+                <div class="description">List files and directories in the current or specified directory.</div>
+                <div class="syntax">$ ls [options] [directory]</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-l</span><span class="flag-desc">Long format (permissions, owner, size, date)</span></div>
+                    <div class="flag-item"><span class="flag-name">-a</span><span class="flag-desc">Show all files including hidden (starting with .)</span></div>
+                    <div class="flag-item"><span class="flag-name">-h</span><span class="flag-desc">Human-readable file sizes (KB, MB, GB)</span></div>
+                    <div class="flag-item"><span class="flag-name">-R</span><span class="flag-desc">Recursive - list subdirectories</span></div>
+                    <div class="flag-item"><span class="flag-name">-t</span><span class="flag-desc">Sort by modification time</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ ls -lah /home/ubuntu</div>
+                    <div class="example-output">drwxr-xr-x 5 ubuntu ubuntu 4.0K Aug 18 10:30 .<br>-rw-r--r-- 1 ubuntu ubuntu 1.2K Aug 18 09:15 config.yaml<br>drwxr-xr-x 3 ubuntu ubuntu 4.0K Aug 18 08:45 scripts</div>
+                    <div class="example-code" style="margin-top: 0.75rem;">$ ls -lR /etc/docker  # Show all subdirectories</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Check what files are in a directory, verify permissions, confirm if config files exist.
+                </div>
+            </div>
+
+            <!-- cd -->
+            <div class="command-card">
+                <div class="command-name">cd (Change Directory)</div>
+                <div class="description">Navigate to a different directory.</div>
+                <div class="syntax">$ cd [directory]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ cd /home/ubuntu          # Go to home directory</div>
+                    <div class="example-code">$ cd ..                    # Go up one level</div>
+                    <div class="example-code">$ cd -                     # Go to previous directory</div>
+                    <div class="example-code">$ cd ~/projects/app        # Go to ~/projects/app</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Navigate to application directories, config folders, and log directories for deployment and troubleshooting.
+                </div>
+            </div>
+
+            <!-- mkdir -->
+            <div class="command-card">
+                <div class="command-name">mkdir (Make Directory)</div>
+                <div class="description">Create new directories (folders).</div>
+                <div class="syntax">$ mkdir [options] directory_name</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-p</span><span class="flag-desc">Create parent directories if they don't exist</span></div>
+                    <div class="flag-item"><span class="flag-name">-m</span><span class="flag-desc">Set permissions while creating</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ mkdir my_project</div>
+                    <div class="example-code">$ mkdir -p /opt/myapp/logs  # Create nested directories</div>
+                    <div class="example-code">$ mkdir -m 755 public_dir</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Create directories for applications, logs, backups, and configuration files during server setup.
+                </div>
+            </div>
+
+            <!-- cp -->
+            <div class="command-card">
+                <div class="command-name">cp (Copy)</div>
+                <div class="description">Copy files or directories.</div>
+                <div class="syntax">$ cp [options] source destination</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-r</span><span class="flag-desc">Recursive - copy directories and contents</span></div>
+                    <div class="flag-item"><span class="flag-name">-v</span><span class="flag-desc">Verbose - show files being copied</span></div>
+                    <div class="flag-item"><span class="flag-name">-p</span><span class="flag-desc">Preserve permissions and timestamps</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ cp config.yaml config.yaml.bak</div>
+                    <div class="example-code">$ cp -r /opt/app /opt/app_backup</div>
+                    <div class="example-code">$ cp -v *.log /var/log/archive/</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Backup config files before editing, copy application files during deployment.
+                </div>
+            </div>
+
+            <!-- mv -->
+            <div class="command-card">
+                <div class="command-name">mv (Move/Rename)</div>
+                <div class="description">Move or rename files and directories.</div>
+                <div class="syntax">$ mv [options] source destination</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-v</span><span class="flag-desc">Verbose - show files being moved</span></div>
+                    <div class="flag-item"><span class="flag-name">-f</span><span class="flag-desc">Force - overwrite without prompt</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ mv old_name.txt new_name.txt    # Rename</div>
+                    <div class="example-code">$ mv /tmp/app /opt/app             # Move directory</div>
+                    <div class="example-code">$ mv *.log /var/log/archive/       # Move multiple files</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Organize files, move logs to archive, rename backup files.
+                </div>
+            </div>
+
+            <!-- rm -->
+            <div class="command-card">
+                <div class="command-name">rm (Remove/Delete)</div>
+                <div class="description">Delete files or directories. ⚠️ Be careful - deletion is permanent!</div>
+                <div class="syntax">$ rm [options] file/directory</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-r</span><span class="flag-desc">Recursive - delete directories and contents</span></div>
+                    <div class="flag-item"><span class="flag-name">-f</span><span class="flag-desc">Force - don't prompt for confirmation</span></div>
+                    <div class="flag-item"><span class="flag-name">-i</span><span class="flag-desc">Interactive - ask before deleting each file</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ rm old_backup.tar.gz</div>
+                    <div class="example-code">$ rm -rf /tmp/old_app       # Delete directory</div>
+                    <div class="example-code">$ rm -i *.log               # Ask before deleting each</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Clean up old backups, logs, and temporary files.
+                </div>
+            </div>
+
+            <!-- touch -->
+            <div class="command-card">
+                <div class="command-name">touch</div>
+                <div class="description">Create empty files or update file modification time.</div>
+                <div class="syntax">$ touch filename</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ touch config.yaml</div>
+                    <div class="example-code">$ touch file1 file2 file3  # Create multiple files</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Create placeholder files for configuration, mark files as processed.
+                </div>
+            </div>
+
+            <!-- cat -->
+            <div class="command-card">
+                <div class="command-name">cat (Concatenate)</div>
+                <div class="description">Display file contents, concatenate files, or create files.</div>
+                <div class="syntax">$ cat [file]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ cat config.yaml</div>
+                    <div class="example-code">$ cat file1 file2 file3 > combined.txt</div>
+                    <div class="example-code">$ cat > newfile.txt << EOF
+Line 1
+Line 2
+EOF</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    View configuration files, combine multiple files, create files with here-documents.
+                </div>
+            </div>
+
+            <!-- less/more -->
+            <div class="command-card">
+                <div class="command-name">less / more</div>
+                <div class="description">View file contents one screen at a time (useful for large files).</div>
+                <div class="syntax">$ less [file]<br>$ more [file]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ less /var/log/syslog</div>
+                    <div class="example-code">$ more large_log_file.txt</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Read large log files without loading entire file into memory. Use 'q' to quit, Space to next page, 'G' to go to end.
+                </div>
+            </div>
+
+            <!-- find -->
+            <div class="command-card">
+                <div class="command-name">find</div>
+                <div class="description">Search for files and directories matching criteria.</div>
+                <div class="syntax">$ find [path] [options] [expression]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ find /opt -name "*.log"              # Find all log files</div>
+                    <div class="example-code">$ find / -type f -size +100M          # Find files larger than 100MB</div>
+                    <div class="example-code">$ find /var/log -mtime +30            # Find files modified 30+ days ago</div>
+                    <div class="example-code">$ find . -name "*.bak" -delete        # Delete all .bak files</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Find old log files to delete, locate config files, find large files consuming disk space.
+                </div>
+            </div>
+
+            <!-- grep -->
+            <div class="command-card">
+                <div class="command-name">grep</div>
+                <div class="description">Search for text patterns in files.</div>
+                <div class="syntax">$ grep [options] pattern [file]</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-r</span><span class="flag-desc">Recursive - search in subdirectories</span></div>
+                    <div class="flag-item"><span class="flag-name">-n</span><span class="flag-desc">Show line numbers</span></div>
+                    <div class="flag-item"><span class="flag-name">-i</span><span class="flag-desc">Case-insensitive search</span></div>
+                    <div class="flag-item"><span class="flag-name">-c</span><span class="flag-desc">Count matching lines</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ grep "ERROR" /var/log/app.log</div>
+                    <div class="example-code">$ grep -rn "TODO" /home/ubuntu/projects/</div>
+                    <div class="example-code">$ grep -c "Connection refused" /var/log/syslog</div>
+                    <div class="example-code">$ tail -f /var/log/app.log | grep "ERROR"  # Real-time error monitoring</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Search error logs, find configuration parameters, locate code issues.
+                </div>
+            </div>
+        </div>
+
+        <!-- System Information Section -->
+        <div id="system" class="category-section">
+            <h2>🖥️ System Information & Monitoring</h2>
+
+            <!-- uname -->
+            <div class="command-card">
+                <div class="command-name">uname</div>
+                <div class="description">Display system information (OS, kernel version, architecture).</div>
+                <div class="syntax">$ uname [options]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ uname -a           # Show all information</div>
+                    <div class="example-code">$ uname -r           # Show kernel version</div>
+                    <div class="example-code">$ uname -m           # Show architecture (x86_64, arm64, etc)</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Verify OS compatibility before deploying applications, check if system is 32-bit or 64-bit.
+                </div>
+            </div>
+
+            <!-- whoami -->
+            <div class="command-card">
+                <div class="command-name">whoami</div>
+                <div class="description">Display current logged-in user.</div>
+                <div class="syntax">$ whoami</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ whoami</div>
+                    <div class="example-output">ubuntu</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Verify you're logged in as correct user before running commands.
+                </div>
+            </div>
+
+            <!-- uptime -->
+            <div class="command-card">
+                <div class="command-name">uptime</div>
+                <div class="description">Show how long system has been running and current load average.</div>
+                <div class="syntax">$ uptime</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ uptime</div>
+                    <div class="example-output"> 14:35:22 up 45 days, 3:24,  2 users,  load average: 0.52, 0.48, 0.45</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Check if server was recently rebooted, monitor system load before deploying.
+                </div>
+            </div>
+
+            <!-- df -->
+            <div class="command-card">
+                <div class="command-name">df (Disk Free)</div>
+                <div class="description">Show disk space usage for all mounted filesystems.</div>
+                <div class="syntax">$ df [options]</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-h</span><span class="flag-desc">Human-readable format (KB, MB, GB)</span></div>
+                    <div class="flag-item"><span class="flag-name">-i</span><span class="flag-desc">Show inode usage instead of blocks</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ df -h</div>
+                    <div class="example-output">Filesystem      Size  Used Avail Use% Mounted on<br>/dev/sda1        99G   45G   50G  47% /</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Monitor disk usage, identify when disk is running full (triggers alerts at 80%+).
+                </div>
+            </div>
+
+            <!-- du -->
+            <div class="command-card">
+                <div class="command-name">du (Disk Usage)</div>
+                <div class="description">Show disk space used by files and directories.</div>
+                <div class="syntax">$ du [options] [directory]</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-h</span><span class="flag-desc">Human-readable format</span></div>
+                    <div class="flag-item"><span class="flag-name">-s</span><span class="flag-desc">Show only total for directory</span></div>
+                    <div class="flag-item"><span class="flag-name">-d</span><span class="flag-desc">Limit depth of directories shown</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ du -sh /home/ubuntu                    # Total size of user directory</div>
+                    <div class="example-code">$ du -sh /var/*                         # Size of each item in /var</div>
+                    <div class="example-code">$ du -h /opt/app | sort -hr | head -20 # Find largest subdirectories</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Find what's using disk space, identify large log directories consuming space.
+                </div>
+            </div>
+
+            <!-- free -->
+            <div class="command-card">
+                <div class="command-name">free</div>
+                <div class="description">Show RAM and swap memory usage.</div>
+                <div class="syntax">$ free [options]</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-h</span><span class="flag-desc">Human-readable format</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ free -h</div>
+                    <div class="example-output">              total        used        free      shared  buff/cache   available<br>Mem:            15Gi       8.2Gi       2.1Gi       251Mi       4.7Gi       6.3Gi</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Monitor memory usage, identify memory leaks, decide if more RAM is needed.
+                </div>
+            </div>
+
+            <!-- top -->
+            <div class="command-card">
+                <div class="command-name">top / htop</div>
+                <div class="description">Monitor running processes, CPU, and memory in real-time.</div>
+                <div class="syntax">$ top<br>$ htop</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ top                       # Interactive process monitor</div>
+                    <div class="example-code">$ htop                      # Better version of top (more user-friendly)</div>
+                    <div class="example-code">$ top -p 1234              # Monitor specific process</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Real-time monitoring of CPU-hungry processes, identify memory leaks, check system load.
+                </div>
+            </div>
+
+            <!-- ps -->
+            <div class="command-card">
+                <div class="command-name">ps (Process Status)</div>
+                <div class="description">List currently running processes.</div>
+                <div class="syntax">$ ps [options]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ ps aux                    # Show all processes with details</div>
+                    <div class="example-code">$ ps aux | grep nginx       # Find nginx processes</div>
+                    <div class="example-code">$ ps -ef --forest           # Show process tree</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Verify applications are running, find process IDs to kill, check which user is running a process.
+                </div>
+            </div>
+
+            <!-- lscpu -->
+            <div class="command-card">
+                <div class="command-name">lscpu</div>
+                <div class="description">Display CPU architecture information.</div>
+                <div class="syntax">$ lscpu</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ lscpu | head -15</div>
+                    <div class="example-output">Architecture:          x86_64<br>CPU op-mode(s):        32-bit, 64-bit<br>Byte Order:            Little Endian<br>CPU(s):                8<br>On-line CPU(s) list:   0-7</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Check number of CPU cores, verify CPU architecture before installing software.
+                </div>
+            </div>
+
+            <!-- systemctl status -->
+            <div class="command-card">
+                <div class="command-name">systemctl status</div>
+                <div class="description">Check status of system services.</div>
+                <div class="syntax">$ systemctl status [service]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ systemctl status docker</div>
+                    <div class="example-code">$ systemctl status nginx</div>
+                    <div class="example-code">$ systemctl status ssh</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Verify services are running, check startup status, diagnose service failures.
+                </div>
+            </div>
+        </div>
+
+        <!-- User & Permissions Section -->
+        <div id="user" class="category-section">
+            <h2>👤 User & Permissions Management</h2>
+
+            <!-- sudo -->
+            <div class="command-card">
+                <div class="command-name">sudo (Superuser DO)</div>
+                <div class="description">Execute commands with root/elevated privileges.</div>
+                <div class="syntax">$ sudo [command]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo apt update</div>
+                    <div class="example-code">$ sudo systemctl start docker</div>
+                    <div class="example-code">$ sudo -l             # Show what commands you can run with sudo</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Install packages, start services, modify system files as regular user.
+                </div>
+            </div>
+
+            <!-- chmod -->
+            <div class="command-card">
+                <div class="command-name">chmod (Change Mode)</div>
+                <div class="description">Change file and directory permissions.</div>
+                <div class="syntax">$ chmod [options] mode file</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ chmod 755 script.sh         # rwx-r-x-r-x (executable script)</div>
+                    <div class="example-code">$ chmod 644 config.yaml       # rw--r--r-- (readable config)</div>
+                    <div class="example-code">$ chmod +x deploy.sh          # Add executable permission</div>
+                    <div class="example-code">$ chmod -R 755 /opt/app       # Recursive - all subdirectories</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Make scripts executable, secure config files, set proper permissions for deployment.
+                </div>
+            </div>
+
+            <!-- chown -->
+            <div class="command-card">
+                <div class="command-name">chown (Change Owner)</div>
+                <div class="description">Change file and directory owner and group.</div>
+                <div class="syntax">$ chown [user:group] file/directory</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ chown ubuntu:ubuntu /home/ubuntu/app</div>
+                    <div class="example-code">$ chown -R nginx:nginx /var/www/html</div>
+                    <div class="example-code">$ chown :docker /var/run/docker.sock</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Assign application files to correct user, fix permission issues, secure directories.
+                </div>
+            </div>
+
+            <!-- useradd -->
+            <div class="command-card">
+                <div class="command-name">useradd</div>
+                <div class="description">Create new user accounts.</div>
+                <div class="syntax">$ sudo useradd [options] username</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo useradd -m -s /bin/bash deploy</div>
+                    <div class="example-code">$ sudo useradd -m -G docker jenkins</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Create service accounts, add deployment users, manage application accounts.
+                </div>
+            </div>
+
+            <!-- groupadd -->
+            <div class="command-card">
+                <div class="command-name">groupadd</div>
+                <div class="description">Create new user groups.</div>
+                <div class="syntax">$ sudo groupadd groupname</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ sudo groupadd devops</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Organize users into groups with specific permissions.
+                </div>
+            </div>
+
+            <!-- usermod -->
+            <div class="command-card">
+                <div class="command-name">usermod</div>
+                <div class="description">Modify user account properties.</div>
+                <div class="syntax">$ sudo usermod [options] username</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo usermod -aG docker ubuntu        # Add user to docker group</div>
+                    <div class="example-code">$ sudo usermod -aG sudo deploy          # Add sudo privileges</div>
+                    <div class="example-code">$ sudo usermod -s /bin/bash jenkins     # Change shell</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Add users to groups, grant permissions, enable Docker access without sudo.
+                </div>
+            </div>
+
+            <!-- passwd -->
+            <div class="command-card">
+                <div class="command-name">passwd</div>
+                <div class="description">Change user password.</div>
+                <div class="syntax">$ passwd [username]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ passwd                    # Change current user password</div>
+                    <div class="example-code">$ sudo passwd deploy        # Change another user's password</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Reset forgotten passwords, update account passwords.
+                </div>
+            </div>
+
+            <!-- id -->
+            <div class="command-card">
+                <div class="command-name">id</div>
+                <div class="description">Display user ID and group information.</div>
+                <div class="syntax">$ id [username]</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ id ubuntu</div>
+                    <div class="example-output">uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),27(sudo),998(docker)</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Verify group membership, check user permissions, troubleshoot access issues.
+                </div>
+            </div>
+
+            <!-- sudo visudo -->
+            <div class="command-card">
+                <div class="command-name">sudo visudo</div>
+                <div class="description">Safely edit sudoers file to configure sudo access.</div>
+                <div class="syntax">$ sudo visudo</div>
+                <div class="example">
+                    <div class="example-title">Example (add to /etc/sudoers):</div>
+                    <div class="example-code"># Allow deploy user to restart nginx without password
+deploy ALL=(ALL) NOPASSWD: /usr/sbin/service nginx *
+
+# Allow devops group to run all commands
+%devops ALL=(ALL) ALL</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Grant specific commands without password, enable automation, configure role-based access.
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Section -->
+        <div id="network" class="category-section">
+            <h2>🌐 Network Management</h2>
+
+            <!-- ping -->
+            <div class="command-card">
+                <div class="command-name">ping</div>
+                <div class="description">Test connectivity to a host by sending ICMP packets.</div>
+                <div class="syntax">$ ping [options] hostname/IP</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ ping google.com</div>
+                    <div class="example-code">$ ping -c 4 8.8.8.8             # Send 4 packets then stop</div>
+                    <div class="example-code">$ ping -i 2 server.example.com  # Ping every 2 seconds</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Test basic network connectivity, verify hostname resolution, check if server is reachable.
+                </div>
+            </div>
+
+            <!-- ifconfig / ip -->
+            <div class="command-card">
+                <div class="command-name">ifconfig / ip addr</div>
+                <div class="description">Display network interface configuration and IP addresses.</div>
+                <div class="syntax">$ ifconfig [interface]<br>$ ip addr show</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ ip addr show          # Show all interfaces and IPs</div>
+                    <div class="example-code">$ ip addr show eth0     # Show specific interface</div>
+                    <div class="example-code">$ ifconfig              # Legacy command (still used)</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Find server IP address, verify network configuration, check interface status.
+                </div>
+            </div>
+
+            <!-- netstat / ss -->
+            <div class="command-card">
+                <div class="command-name">netstat / ss</div>
+                <div class="description">Display network connections and listening ports.</div>
+                <div class="syntax">$ netstat [options]<br>$ ss [options]</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-tlnp</span><span class="flag-desc">Show listening TCP ports with process info</span></div>
+                    <div class="flag-item"><span class="flag-name">-a</span><span class="flag-desc">Show all connections</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ ss -tlnp | grep 8080   # Check if port 8080 is open</div>
+                    <div class="example-code">$ netstat -tlnp          # Show all listening ports with PIDs</div>
+                    <div class="example-code">$ ss -tan                # Show all TCP connections</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Verify application is listening on correct port, identify port conflicts, troubleshoot connectivity issues.
+                </div>
+            </div>
+
+            <!-- curl / wget -->
+            <div class="command-card">
+                <div class="command-name">curl / wget</div>
+                <div class="description">Download files or test HTTP endpoints.</div>
+                <div class="syntax">$ curl [URL]<br>$ wget [URL]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ curl http://localhost:8080       # Test web service</div>
+                    <div class="example-code">$ curl -I http://example.com       # Get headers only</div>
+                    <div class="example-code">$ curl -o file.zip http://example.com/file.zip</div>
+                    <div class="example-code">$ wget -O backup.tar.gz https://backup-server.com/backup.tar.gz</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Test API endpoints, verify services are responding, download files from remote servers.
+                </div>
+            </div>
+
+            <!-- nslookup / dig -->
+            <div class="command-card">
+                <div class="command-name">nslookup / dig</div>
+                <div class="description">Query DNS records and resolve hostnames.</div>
+                <div class="syntax">$ nslookup domain<br>$ dig domain</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ nslookup google.com</div>
+                    <div class="example-code">$ dig example.com +short</div>
+                    <div class="example-code">$ dig -x 8.8.8.8         # Reverse DNS lookup</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Troubleshoot DNS issues, verify hostname resolution, check DNS records.
+                </div>
+            </div>
+
+            <!-- traceroute -->
+            <div class="command-card">
+                <div class="command-name">traceroute</div>
+                <div class="description">Show network path to a host, identifying each hop.</div>
+                <div class="syntax">$ traceroute hostname</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ traceroute google.com</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Diagnose routing issues, identify where connection fails, troubleshoot network latency.
+                </div>
+            </div>
+
+            <!-- iptables / firewall -->
+            <div class="command-card">
+                <div class="command-name">firewall-cmd / ufw</div>
+                <div class="description">Manage firewall rules and port access.</div>
+                <div class="syntax">$ sudo firewall-cmd --list-ports<br>$ sudo ufw status</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo ufw allow 22/tcp              # Allow SSH</div>
+                    <div class="example-code">$ sudo ufw allow 80/tcp              # Allow HTTP</div>
+                    <div class="example-code">$ sudo firewall-cmd --list-all</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Open ports for services, block unauthorized access, manage security rules.
+                </div>
+            </div>
+        </div>
+
+        <!-- Process Management Section -->
+        <div id="process" class="category-section">
+            <h2>⚙️ Process Management</h2>
+
+            <!-- kill -->
+            <div class="command-card">
+                <div class="command-name">kill</div>
+                <div class="description">Terminate running processes by PID.</div>
+                <div class="syntax">$ kill [options] PID</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ kill 1234                         # Graceful termination</div>
+                    <div class="example-code">$ kill -9 1234                      # Force kill (SIGKILL)</div>
+                    <div class="example-code">$ pkill -f nginx                    # Kill all nginx processes</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Stop hung processes, terminate deployment processes, force-kill runaway applications.
+                </div>
+            </div>
+
+            <!-- jobs / bg / fg -->
+            <div class="command-card">
+                <div class="command-name">jobs / bg / fg</div>
+                <div class="description">Manage background and foreground processes in shell.</div>
+                <div class="syntax">$ jobs<br>$ command &<br>$ bg %1<br>$ fg %1</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ long_running_task &              # Run in background</div>
+                    <div class="example-code">$ jobs                             # List background jobs</div>
+                    <div class="example-code">$ fg %1                            # Bring job 1 to foreground</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Run multiple commands in one terminal, manage long-running tasks.
+                </div>
+            </div>
+
+            <!-- nohup -->
+            <div class="command-card">
+                <div class="command-name">nohup (No Hangup)</div>
+                <div class="description">Run command immune to hangups, useful for remote sessions.</div>
+                <div class="syntax">$ nohup command &</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ nohup python deploy.py > deploy.log 2>&1 &</div>
+                    <div class="example-code">$ nohup bash backup.sh &</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Run long processes over SSH without losing them on disconnect.
+                </div>
+            </div>
+
+            <!-- screen / tmux -->
+            <div class="command-card">
+                <div class="command-name">screen / tmux</div>
+                <div class="description">Terminal multiplexer - create persistent sessions.</div>
+                <div class="syntax">$ screen<br>$ tmux</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ tmux new-session -s deploy            # Create named session</div>
+                    <div class="example-code">$ tmux attach -t deploy                 # Reconnect to session</div>
+                    <div class="example-code">$ tmux list-sessions                    # List all sessions</div>
+                    <div class="example-code"># Inside tmux: Ctrl+b+d to detach</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Keep processes running after SSH disconnect, monitor multiple tasks simultaneously.
+                </div>
+            </div>
+
+            <!-- wait -->
+            <div class="command-card">
+                <div class="command-name">wait</div>
+                <div class="description">Wait for background processes to complete.</div>
+                <div class="syntax">$ wait [PID]</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ process1 & process2 & process3 &
+$ wait                              # Wait for all to complete</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    In scripts, ensure all parallel jobs complete before proceeding.
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Section -->
+        <div id="logs" class="category-section">
+            <h2>📝 Log Management</h2>
+
+            <!-- tail -->
+            <div class="command-card">
+                <div class="command-name">tail</div>
+                <div class="description">Show last lines of a file, useful for live log monitoring.</div>
+                <div class="syntax">$ tail [options] file</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-f</span><span class="flag-desc">Follow mode - show new lines as they're added (real-time)</span></div>
+                    <div class="flag-item"><span class="flag-name">-n</span><span class="flag-desc">Number of lines to show</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ tail -f /var/log/app.log              # Real-time log monitoring</div>
+                    <div class="example-code">$ tail -n 50 /var/log/syslog            # Last 50 lines</div>
+                    <div class="example-code">$ tail -f /var/log/app.log | grep ERROR # Monitor only errors</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Monitor application logs during deployment, check recent errors, follow system events.
+                </div>
+            </div>
+
+            <!-- head -->
+            <div class="command-card">
+                <div class="command-name">head</div>
+                <div class="description">Show first lines of a file.</div>
+                <div class="syntax">$ head [options] file</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ head /var/log/app.log</div>
+                    <div class="example-code">$ head -n 20 /etc/fstab</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Preview log file contents, check file headers without loading entire file.
+                </div>
+            </div>
+
+            <!-- wc -->
+            <div class="command-card">
+                <div class="command-name">wc (Word Count)</div>
+                <div class="description">Count lines, words, or characters in files.</div>
+                <div class="syntax">$ wc [options] file</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ wc -l /var/log/app.log       # Count lines</div>
+                    <div class="example-code">$ cat *.log | wc -l             # Count lines in all logs</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Count log entries, verify log file size, monitor log growth.
+                </div>
+            </div>
+
+            <!-- awk -->
+            <div class="command-card">
+                <div class="command-name">awk</div>
+                <div class="description">Text processing language for filtering and transforming logs.</div>
+                <div class="syntax">$ awk 'pattern {action}' file</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ awk '{print $1}' /var/log/access.log      # Print first column (IPs)</div>
+                    <div class="example-code">$ awk -F: '{print $1}' /etc/passwd           # Extract usernames</div>
+                    <div class="example-code">$ awk '$3 > 500 {print}' data.log            # Show lines where 3rd field > 500</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Parse logs, extract specific columns, process structured data, create reports.
+                </div>
+            </div>
+
+            <!-- sed -->
+            <div class="command-card">
+                <div class="command-name">sed (Stream Editor)</div>
+                <div class="description">Find and replace text in files or streams.</div>
+                <div class="syntax">$ sed 's/pattern/replacement/' file</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sed 's/old/new/g' config.yaml             # Replace all occurrences</div>
+                    <div class="example-code">$ sed -i 's/IP/HOSTNAME/' /etc/hosts         # In-place edit</div>
+                    <div class="example-code">$ sed '5,10d' /etc/sudoers                  # Delete lines 5-10</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Bulk edit config files, remove sensitive info from logs, transform data.
+                </div>
+            </div>
+
+            <!-- journalctl -->
+            <div class="command-card">
+                <div class="command-name">journalctl</div>
+                <div class="description">Query systemd journal for service logs.</div>
+                <div class="syntax">$ journalctl [options]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ journalctl -u nginx                       # Logs for nginx service</div>
+                    <div class="example-code">$ journalctl -u docker -f                   # Follow docker logs</div>
+                    <div class="example-code">$ journalctl --since "1 hour ago"           # Last hour</div>
+                    <div class="example-code">$ journalctl -p err                         # Only error messages</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Check service logs, troubleshoot service failures, monitor system events.
+                </div>
+            </div>
+
+            <!-- dmesg -->
+            <div class="command-card">
+                <div class="command-name">dmesg</div>
+                <div class="description">Show kernel ring buffer messages.</div>
+                <div class="syntax">$ dmesg [options]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ dmesg | tail -20              # Last 20 kernel messages</div>
+                    <div class="example-code">$ dmesg | grep -i error         # Kernel errors</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Debug hardware issues, check boot messages, monitor system health.
+                </div>
+            </div>
+        </div>
+
+        <!-- Package Management Section -->
+        <div id="package" class="category-section">
+            <h2>📦 Package Management</h2>
+
+            <!-- apt / apt-get -->
+            <div class="command-card">
+                <div class="command-name">apt / apt-get</div>
+                <div class="description">Package manager for Debian/Ubuntu systems.</div>
+                <div class="syntax">$ sudo apt update<br>$ sudo apt install package_name</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo apt update                           # Update package lists</div>
+                    <div class="example-code">$ sudo apt upgrade                          # Upgrade all packages</div>
+                    <div class="example-code">$ sudo apt install curl wget htop           # Install multiple packages</div>
+                    <div class="example-code">$ sudo apt remove nginx                     # Remove package</div>
+                    <div class="example-code">$ sudo apt search docker                    # Search for packages</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Install/update software, manage system dependencies, update security patches.
+                </div>
+            </div>
+
+            <!-- yum / dnf -->
+            <div class="command-card">
+                <div class="command-name">yum / dnf</div>
+                <div class="description">Package manager for RedHat/CentOS/Fedora systems.</div>
+                <div class="syntax">$ sudo yum install package_name<br>$ sudo dnf install package_name</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo yum check-update                     # Check for updates</div>
+                    <div class="example-code">$ sudo yum install git docker-ce            # Install packages</div>
+                    <div class="example-code">$ sudo yum remove nginx                     # Remove package</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Install software on RedHat-based systems.
+                </div>
+            </div>
+
+            <!-- dpkg -->
+            <div class="command-card">
+                <div class="command-name">dpkg</div>
+                <div class="description">Low-level package manager for Debian/Ubuntu (.deb files).</div>
+                <div class="syntax">$ dpkg [options] file.deb</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ dpkg -i myapp.deb             # Install .deb file</div>
+                    <div class="example-code">$ dpkg -l | grep nginx          # List installed packages</div>
+                    <div class="example-code">$ dpkg -r nginx                 # Remove package</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Install custom .deb packages, check package details.
+                </div>
+            </div>
+
+            <!-- snap -->
+            <div class="command-card">
+                <div class="command-name">snap</div>
+                <div class="description">Modern package manager with containerized apps.</div>
+                <div class="syntax">$ sudo snap install package_name</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ snap list                     # List installed snaps</div>
+                    <div class="example-code">$ sudo snap install aws-cli     # Install snap package</div>
+                    <div class="example-code">$ sudo snap refresh aws-cli     # Update snap</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Install containerized applications, isolated dependencies.
+                </div>
+            </div>
+        </div>
+
+        <!-- Disk Management Section -->
+        <div id="disk" class="category-section">
+            <h2>💾 Disk Management</h2>
+
+            <!-- lsblk -->
+            <div class="command-card">
+                <div class="command-name">lsblk</div>
+                <div class="description">List block devices and partitions.</div>
+                <div class="syntax">$ lsblk</div>
+                <div class="example">
+                    <div class="example-title">Example Output:</div>
+                    <div class="example-code">$ lsblk</div>
+                    <div class="example-output">NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT<br>sda      8:0    0  100G  0 disk<br>└─sda1   8:1    0  100G  0 part /</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    View disk layout, identify available disks, plan partitioning.
+                </div>
+            </div>
+
+            <!-- fdisk / parted -->
+            <div class="command-card">
+                <div class="command-name">fdisk / parted</div>
+                <div class="description">Partition disk management tools.</div>
+                <div class="syntax">$ sudo fdisk /dev/sda<br>$ sudo parted /dev/sda</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo parted -l                # List all disks and partitions</div>
+                    <div class="example-code">$ sudo parted /dev/sdb mkpart primary 0 100G</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Create partitions, resize disks, manage disk layout.
+                </div>
+            </div>
+
+            <!-- mkfs -->
+            <div class="command-card">
+                <div class="command-name">mkfs (Make FileSystem)</div>
+                <div class="description">Create filesystems on partitions.</div>
+                <div class="syntax">$ sudo mkfs -t ext4 /dev/sda1</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo mkfs.ext4 /dev/sdb1      # Create ext4 filesystem</div>
+                    <div class="example-code">$ sudo mkfs.xfs /dev/sdb1       # Create XFS filesystem</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Format new disks, initialize storage devices.
+                </div>
+            </div>
+
+            <!-- mount / umount -->
+            <div class="command-card">
+                <div class="command-name">mount / umount</div>
+                <div class="description">Mount and unmount filesystems.</div>
+                <div class="syntax">$ sudo mount /dev/sdb1 /mnt/data<br>$ sudo umount /mnt/data</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ mount                         # List mounted filesystems</div>
+                    <div class="example-code">$ sudo mount /dev/sdb1 /data    # Mount device</div>
+                    <div class="example-code">$ sudo umount /mnt/data         # Unmount filesystem</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Mount data drives, attach external storage, manage NFS shares.
+                </div>
+            </div>
+
+            <!-- rsync -->
+            <div class="command-card">
+                <div class="command-name">rsync</div>
+                <div class="description">Fast, incremental file sync (great for backups).</div>
+                <div class="syntax">$ rsync -avz source destination</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ rsync -avz /opt/app /backup/         # Local backup</div>
+                    <div class="example-code">$ rsync -avz /data/ user@server:/backup/data/  # Remote backup</div>
+                    <div class="example-code">$ rsync -avz --delete /source/ /dest/  # Mirror directories</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Create backups, sync files between servers, incremental updates.
+                </div>
+            </div>
+
+            <!-- tar -->
+            <div class="command-card">
+                <div class="command-name">tar (Tape Archive)</div>
+                <div class="description">Create and extract compressed archives.</div>
+                <div class="syntax">$ tar [options] file.tar.gz</div>
+                <div class="flags">
+                    <h4>Common Flags:</h4>
+                    <div class="flag-item"><span class="flag-name">-c</span><span class="flag-desc">Create archive</span></div>
+                    <div class="flag-item"><span class="flag-name">-v</span><span class="flag-desc">Verbose - show files</span></div>
+                    <div class="flag-item"><span class="flag-name">-z</span><span class="flag-desc">Gzip compression</span></div>
+                    <div class="flag-item"><span class="flag-name">-x</span><span class="flag-desc">Extract archive</span></div>
+                    <div class="flag-item"><span class="flag-name">-f</span><span class="flag-desc">File to operate on</span></div>
+                </div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ tar -cvzf backup.tar.gz /opt/app     # Create gzipped archive</div>
+                    <div class="example-code">$ tar -xvzf backup.tar.gz              # Extract archive</div>
+                    <div class="example-code">$ tar -tvzf backup.tar.gz              # List contents</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Create backups, compress application files, distribute packages.
+                </div>
+            </div>
+
+            <!-- zip / unzip -->
+            <div class="command-card">
+                <div class="command-name">zip / unzip</div>
+                <div class="description">Create and extract ZIP archives.</div>
+                <div class="syntax">$ zip -r file.zip directory<br>$ unzip file.zip</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ zip -r app.zip /opt/app/              # Create zip archive</div>
+                    <div class="example-code">$ unzip app.zip                         # Extract zip</div>
+                    <div class="example-code">$ unzip -l app.zip                      # List contents</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Share files, create Windows-compatible archives.
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Processing Section -->
+        <div id="text" class="category-section">
+            <h2>✏️ Text Processing</h2>
+
+            <!-- sort -->
+            <div class="command-card">
+                <div class="command-name">sort</div>
+                <div class="description">Sort lines of text files.</div>
+                <div class="syntax">$ sort [options] file</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sort /etc/passwd                      # Sort alphabetically</div>
+                    <div class="example-code">$ sort -n file.txt                     # Numeric sort</div>
+                    <div class="example-code">$ sort -r file.txt                     # Reverse sort</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Organize data, prepare files for comparison.
+                </div>
+            </div>
+
+            <!-- uniq -->
+            <div class="command-card">
+                <div class="command-name">uniq</div>
+                <div class="description">Remove duplicate lines from sorted file.</div>
+                <div class="syntax">$ uniq [options] file</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sort file.txt | uniq                 # Remove duplicates</div>
+                    <div class="example-code">$ uniq -c file.txt                     # Count occurrences</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Remove duplicate logs, analyze frequencies.
+                </div>
+            </div>
+
+            <!-- cut -->
+            <div class="command-card">
+                <div class="command-name">cut</div>
+                <div class="description">Extract columns from files.</div>
+                <div class="syntax">$ cut -d: -f1 /etc/passwd</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ cut -d: -f1 /etc/passwd              # Get usernames</div>
+                    <div class="example-code">$ cut -d' ' -f1,2 access.log           # Get IP and username</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Extract specific columns from CSV/structured data.
+                </div>
+            </div>
+
+            <!-- tr -->
+            <div class="command-card">
+                <div class="command-name">tr (Translate)</div>
+                <div class="description">Translate or delete characters.</div>
+                <div class="syntax">$ tr [options] set1 set2</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ echo "hello" | tr 'a-z' 'A-Z'       # Convert to uppercase</div>
+                    <div class="example-code">$ tr -d '\r' < file.txt > clean.txt   # Remove carriage returns</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Convert case, remove characters, format data.
+                </div>
+            </div>
+
+            <!-- paste -->
+            <div class="command-card">
+                <div class="command-name">paste</div>
+                <div class="description">Merge lines from multiple files side by side.</div>
+                <div class="syntax">$ paste file1 file2</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ paste <(seq 1 5) <(seq 100 105)</div>
+                    <div class="example-output">1	100<br>2	101<br>3	102</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Combine related data files, correlate logs.
+                </div>
+            </div>
+
+            <!-- comm -->
+            <div class="command-card">
+                <div class="command-name">comm</div>
+                <div class="description">Compare two sorted files line by line.</div>
+                <div class="syntax">$ comm file1 file2</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ comm old_list.txt new_list.txt       # Show differences</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Find new/removed items, compare versions.
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Management Section -->
+        <div id="service" class="category-section">
+            <h2>🔧 Service Management</h2>
+
+            <!-- systemctl -->
+            <div class="command-card">
+                <div class="command-name">systemctl</div>
+                <div class="description">Manage systemd services and system state.</div>
+                <div class="syntax">$ sudo systemctl [command] service_name</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo systemctl start nginx                # Start service</div>
+                    <div class="example-code">$ sudo systemctl stop nginx                 # Stop service</div>
+                    <div class="example-code">$ sudo systemctl restart nginx              # Restart service</div>
+                    <div class="example-code">$ sudo systemctl enable nginx               # Enable at boot</div>
+                    <div class="example-code">$ sudo systemctl status nginx               # Check status</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Manage application services, enable auto-startup, troubleshoot service issues.
+                </div>
+            </div>
+
+            <!-- service -->
+            <div class="command-card">
+                <div class="command-name">service</div>
+                <div class="description">Legacy service management (works on older systems).</div>
+                <div class="syntax">$ sudo service service_name [start|stop|restart]</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo service nginx start</div>
+                    <div class="example-code">$ sudo service docker restart</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Works on older systems without systemd.
+                </div>
+            </div>
+
+            <!-- chkconfig -->
+            <div class="command-card">
+                <div class="command-name">chkconfig</div>
+                <div class="description">Configure services to start at boot (RedHat systems).</div>
+                <div class="syntax">$ sudo chkconfig [service] on/off</div>
+                <div class="example">
+                    <div class="example-title">Examples:</div>
+                    <div class="example-code">$ sudo chkconfig nginx on                  # Enable at boot</div>
+                    <div class="example-code">$ chkconfig --list                         # List services</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Manage startup scripts on RedHat/CentOS.
+                </div>
+            </div>
+
+            <!-- cron / crontab -->
+            <div class="command-card">
+                <div class="command-name">crontab</div>
+                <div class="description">Schedule recurring tasks and jobs.</div>
+                <div class="syntax">$ crontab -e</div>
+                <div class="example">
+                    <div class="example-title">Example Crontab Entry:</div>
+                    <div class="example-code"># Run backup daily at 2 AM
+0 2 * * * /opt/scripts/backup.sh
+
+# Run cleanup every Sunday at 3 AM
+0 3 * * 0 /opt/scripts/cleanup.sh
+
+# Run every 5 minutes
+*/5 * * * * /opt/scripts/monitor.sh</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Schedule backups, log rotation, monitoring tasks, cleanup jobs.
+                </div>
+            </div>
+
+            <!-- at -->
+            <div class="command-card">
+                <div class="command-name">at</div>
+                <div class="description">Schedule one-time jobs to run at specific time.</div>
+                <div class="syntax">$ at [time]</div>
+                <div class="example">
+                    <div class="example-title">Example:</div>
+                    <div class="example-code">$ at 3:30 PM tomorrow
+at> /opt/scripts/deploy.sh
+at> Ctrl+D (to save)</div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-title">Use Case:</div>
+                    Schedule one-time deployments, maintenance tasks at off-peak hours.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Comprehensive Linux DevOps Commands Guide • Practical Examples for Real-World Use • 2024</p>
+    </footer>
+
+    <script>
+        function switchCategory(category) {
+            // Hide all sections
+            document.querySelectorAll('.category-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(category).classList.add('active');
+
+            // Mark nav button as active
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function filterCommands() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.command-card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchText) ? 'block' : 'none';
+            });
+        }
+
+        // Set first nav button as active on load
+        document.querySelectorAll('.nav-btn')[0].classList.add('active');
+    </script>
+</body>
+</html>
